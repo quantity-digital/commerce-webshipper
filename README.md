@@ -37,7 +37,7 @@ This plugin will, after you have filled in the required settings on the settings
 
 All syncronizations between Craft and Webshipper is handled automaticly using Craft Queue.
 
-> **Tip:** The Account name, Secret token and webhook token can be set to environment variables. See [Environmental Configuration](https://docs.craftcms.com/v3/config/environments.html) in the Craft docs for more information.
+> **Tip:** The Account name, Secret token and webhook token can be set to environment variables. See [Environmental Configuration](https://craftcms.com/docs/3.x/config/#environmental-configuration) in the Craft docs for more information.
 
 ## Usage
 
