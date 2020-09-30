@@ -39,18 +39,6 @@
 		}) }}
 	</div>
 
-	<div class="field width-50">
-		{{ forms.lightSwitchField({
-			label: 'Enable testmode' | t('commerce'),
-			instructions: 'If test mode is enabled, webshipper will treat the request as a dummy request and will not charge you for that booking.' | t('webshipper'),
-			id: 'testMode',
-			name: 'testMode',
-			on: settings.testMode,
-			errors: settings.getErrors('testMode')
-		}) }}
-	</div>
-
-
 
 </div>
 <hr>

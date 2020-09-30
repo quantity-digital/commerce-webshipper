@@ -16,6 +16,5 @@ class Settings extends Model
 	public $accountName;
 	public $secretToken;
 	public $webhookSecret;
-	public $testMode = false;
 	public $channelId;
 }
