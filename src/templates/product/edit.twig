@@ -1,0 +1,33 @@
+{% import '_includes/forms' as forms -%}
+{% do view.registerAssetBundle('QD\\commerce\\webshipper\\assetsbundles\\OrderAsset') %}
+
+{%- set content -%}
+<div id="webshipperTab">
+
+	<div class="field">
+		<div class="heading">
+			<label id="variants-field-label" for="variants">Location</label>
+		</div>
+		<div class="input ltr">
+			<input type="text" id="webshipperLocation" class="text fullwidth" name="title" value="" maxlength="255" autofocus="" autocomplete="off">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="heading">
+			<label id="variants-field-label" for="variants">Tarif number</label>
+		</div>
+		<div class="input ltr">
+			<input type="text" id="webshipperTarif" class="text fullwidth" name="title" value="" maxlength="255" autofocus="" autocomplete="off">
+		</div>
+	</div>
+
+</div>
+{%- endset -%}
+
+{% js %}
+var $tab = $('{{ content | e('js') }}');
+    $tab.toggleClass('hidden', location.hash !== '#webshipperTab');
+
+    $('#content').append($tab);
+{% endjs %}

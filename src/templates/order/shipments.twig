@@ -1,0 +1,85 @@
+{% import '_includes/forms' as forms -%}
+{% do view.registerAssetBundle('QD\\commerce\\webshipper\\assetsbundles\\OrderAsset') %}
+
+{%- set content -%}
+<div id="shippingTab">
+	<h3>Shipping method</h3>
+	<div class="pane">
+		<a href="{{order.webshipperLink}}" target="_blank">Åben i Webshipper</a>
+	</div>
+	<h3>Shipments</h3>
+	{% for shipment in order.shipments %}
+		<div class="pane">
+			<div class="flex flex-nowrap" style="justify-content:space-between;">
+				<h3 class="shipmentTitle">Shipment #{{loop.index}}
+					({{shipment.packageCount}}
+					packages)
+
+					<div class="shipmentTime">
+						{{shipment.dateCreated.date|date('d/m Y G:i')}}
+					</div>
+				</h3>
+				<div class="expand" data-id="{{loop.index}}">
+					+
+				</div>
+			</div>
+
+			<div class="shipmentData" data-id="{{loop.index}}">
+
+				<hr class="shipmentDivider"/>
+
+				<div class="flex trackinglink">
+					<div class="flex-grow">
+						<div class="field">
+							<div class="heading">
+								<label>Tracking link</label>
+							</div>
+							<a href="{{shipment.trackingLink}}" target="_blank">{{shipment.trackingLink}}</a>
+						</div>
+					</div>
+				</div>
+
+				<hr class="shipmentDivider"/>
+
+				<table class="data fullwidth collapsible shippinglines">
+					<thead>
+						<tr>
+							<th scope="col">{{ 'Item' | t('webshipper') }}</th>
+							<th scope="col">{{ 'Quantity' | t('webshipper') }}</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for shipmentLine in shipment.shipmentLines %}
+							{% set lineItem = shipmentLine.lineItem %}
+
+							<tr class="infoRow">
+								<td data-title="{{ 'Item' | t('webshipper') }}">
+									{% if lineItem.purchasable %}
+										<a class="purchasable-link" href="{{ lineItem.purchasable.cpEditUrl }}">{{ shipmentLine }}</a>
+									{% else %}
+										<span class="purchasable-link">{{ shipmentLine }}</span>
+									{% endif %}
+								</td>
+
+								<td data-title="{{ 'Quantity' | t('webshipper') }}">
+									{{ shipmentLine.shippedQty }}
+									of
+									{{ lineItem.qty }}
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+{%- endset -%}
+
+{% js %}
+var $tab = $('{{ content | e('js') }}');
+    $tab.toggleClass('hidden', location.hash !== '#shippingTab');
+
+    $('#content').append($tab);
+{% endjs %}

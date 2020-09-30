@@ -1,0 +1,11 @@
+{% import '_includes/forms' as forms -%}
+
+{{ forms.selectField({
+	label: 'Webshipper shipping method' | t('webshipper'),
+	instructions: 'Choose the webshipper shipping metod' | t('webshipper'),
+	id: 'webshipperRateId',
+	name: 'webshipperRateId',
+	value: webshipperRateId,
+	options: webshipperRates,
+	required: true
+}) }}

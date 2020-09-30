@@ -1,0 +1,43 @@
+{
+  "name": "quantity-digital/commerce-webshipper",
+  "description": "Webshipper integration for Craft Commerce 3",
+  "type": "craft-plugin",
+  "version": "1.0.3",
+  "keywords": [
+	"craft",
+	"cms",
+	"craftcms",
+	"craft-plugin",
+	"craft-commerce",
+	"shipping",
+	"webshipper"
+  ],
+  "support": {
+	"docs": "https://github.com/quantity-digital/commerce-webshipper/blob/master/README.md",
+	"issues": "https://github.com/quantity-digital/commerce-webshipper/issues"
+  },
+  "license": "MIT",
+  "authors": [
+	{
+	  "name": "Quantity Digital",
+	  "homepage": "https://www.quantity.dk/"
+	}
+  ],
+  "require": {
+	"craftcms/cms": "^3.5",
+	"craftcms/commerce": "^3.2"
+  },
+  "require-dev": {
+	"roave/security-advisories": "dev-master"
+  },
+  "autoload": {
+	"psr-4": {
+	  "QD\\commerce\\webshipper\\": "src/"
+	}
+  },
+  "extra": {
+	"name": "Webshipper",
+	"handle": "commerce-webshipper",
+	"class": "QD\\commerce\\webshipper\\Webshipper"
+  }
+}

@@ -1,0 +1,18 @@
+{% import '_includes/forms' as forms %}
+<div class="flex-fields">
+	<div class="field width-50">
+		{{ forms.autosuggestField({
+			label: 'Webhook secret' | t('webshipper'),
+			instructions: 'Secret key for webhooks' | t('webshipper'),
+			id: 'webhookSecret',
+			name: 'webhookSecret',
+			suggestEnvVars: true,
+			value: settings.webhookSecret,
+			required: true,
+		}) }}
+	</div>
+</div>
+<hr>
+<h2>Webhook URL's</h2>
+<strong>Webhook shipement/created:</strong><br>
+{{ craft.app.sites.primarySite.baseUrl }}/craftapi/webshipper/v1/webhook/shipment/created

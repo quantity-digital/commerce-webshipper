@@ -1,0 +1,84 @@
+{% import '_includes/forms' as forms %}
+<div class="flex-fields">
+
+	<div class="field width-50">
+		{{ forms.autosuggestField({
+			label: 'Webshipper Account Name' | t('webshipper'),
+			instructions: 'Your webshipper accountname' | t('webshipper'),
+			id: 'accountName',
+			name: 'accountName',
+			suggestEnvVars: true,
+			value: settings.accountName,
+			first: true,
+			required: true,
+		}) }}
+	</div>
+
+	<div class="field width-50">
+		{{ forms.autosuggestField({
+			label: 'Webshipper Secret Token' | t('webshipper'),
+			instructions: 'Your webshipper secret api tokien' | t('webshipper'),
+			id: 'secretToken',
+			name: 'secretToken',
+			value: settings.secretToken,
+			first: true,
+			suggestEnvVars: true,
+			required: true,
+		}) }}
+	</div>
+
+	<div class="field width-50">
+		{{ forms.selectField({
+			label: 'Webshipper order channel' | t('webshipper'),
+			instructions: 'Choose the webshipper order channel' | t('webshipper'),
+			id: 'channelId',
+			name: 'channelId',
+			value: settings.channelId,
+			options: channels,
+			required: true
+		}) }}
+	</div>
+
+	<div class="field width-50">
+		{{ forms.lightSwitchField({
+			label: 'Enable testmode' | t('commerce'),
+			instructions: 'If test mode is enabled, webshipper will treat the request as a dummy request and will not charge you for that booking.' | t('webshipper'),
+			id: 'testMode',
+			name: 'testMode',
+			on: settings.testMode,
+			errors: settings.getErrors('testMode')
+		}) }}
+	</div>
+
+
+
+</div>
+<hr>
+<h2>{{ 'Statuses' | t('webshipper') }}</h2>
+
+<div class="flex-fields">
+
+	<div class="field width-50">
+		{{ forms.selectField({
+			first: true,
+			label: 'Fulfilled Order Status' | t('webshipper'),
+			instructions: 'Choose the order status that will be set when an order is fulfilled, or blank to not automatically set the status.' | t('webshipper'),
+			id: 'fulfilledStatus',
+			name: 'fulfilledStatus',
+			value: settings.fulfilledStatus,
+			options: statuses,
+		}) }}
+	</div>
+
+	<div class="field width-50">
+		{{ forms.selectField({
+			label: 'Partially Fulfilled Order Status' | t('webshipper'),
+			instructions: 'Choose the order status that will be set when an order is partially fulfilled, or blank to not automatically set the status.' | t('webshipper'),
+			id: 'partiallyFulfilledStatus',
+			name: 'partiallyFulfilledStatus',
+			value: settings.partiallyFulfilledStatus,
+			options: statuses,
+		}) }}
+	</div>
+
+</div>

@@ -1,0 +1,84 @@
+{% extends 'commerce-webshipper/_layouts' %}
+{% do view.registerAssetBundle('QD\\commerce\\webshipper\\assetsbundles\\WebshipperAsset') %}
+{% import '_includes/forms' as forms %}
+
+{% set crumbs = [
+    { label: craft.webshipper.getPluginName() | t('webshipper'), url: url('webshipper/settings') },
+    { label: 'Settings' | t('webshipper'), url: url('webshipper/settings') },
+] %}
+
+{% set navItems = {
+    'general': { title: 'General' | t('webshipper') },
+    'webhook': { title: 'Webhook' | t('webshipper') },
+} %}
+
+{% set selectedTab = 'settings' %}
+{% set selectedItem = 'general' %}
+{% set selectedSubnavItem = 'settings' %}
+{% set fullPageForm = true %}
+
+{% block sidebar %}
+    <nav class="webshipper-settings-tabs" data-vui-tabs>
+        <ul>
+            {% for id, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li>
+                        <a id="tab-{{ loop.index }}" href="#tab-{{ id }}" class="tab {% if id == selectedItem %}sel{% endif %}">
+                            <span class="label">{{ item.title }}</span>
+
+                            {% if item.badge is defined %}
+                                <span class="badge">{{ item.badge }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {# {% for carrier in carriers %}
+                <li>
+                    <a id="tab-{{ loop.index }}" href="#tab-{{ carrier.handle }}" class="tab {% if carrier.handle == selectedItem %}sel{% endif %}">
+
+                        <span class="label">{{ carrier.name }}</span>
+
+                        {% if carrier.enabled %}
+                            <span class="status green"></span>
+                        {% else %}
+                            <span class="status"></span>
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor %} #}
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block blockContent %}
+
+<input type="hidden" name="action" value="plugins/save-plugin-settings">
+<input type="hidden" name="pluginHandle" value="commerce-webshipper">
+
+{% for id, item in navItems %}
+    {% if item.title is defined %}
+        <div id="tab-{{ id }}" {% if not loop.first %}class="hidden"{% endif %}>
+            <h1>{{ item.title }}</h1>
+
+            {% namespace 'settings' %}
+                {% include 'commerce-webshipper/settings/_panes/' ~ id ignore missing %}
+            {% endnamespace %}
+        </div>
+    {% endif %}
+{% endfor %}
+
+{# {% for carrier in carriers %}
+    <div id="tab-{{ carrier.handle }}" class="hidden">
+        <h1>{{ carrier.name }}</h1>
+
+        {% namespace 'settings[carriers][' ~ carrier.handle ~ ']' %}
+            {% include 'commerce-webshipper/settings/_panes/carrier' %}
+        {% endnamespace %}
+    </div>
+{% endfor %} #}
+
+{% endblock %}

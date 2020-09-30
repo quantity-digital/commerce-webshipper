@@ -1,0 +1,13 @@
+{% extends parentLayout ?? '_layouts/cp' %}
+
+{% if title is not defined %}
+    {% set title = craft.webshipper.getPluginName() | t('webshipper') %}
+{% endif %}
+
+{% set content %}
+
+    {% block blockContent %}
+
+    {% endblock %}
+
+{% endset %}
