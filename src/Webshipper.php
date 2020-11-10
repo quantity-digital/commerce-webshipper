@@ -7,33 +7,28 @@ use craft\commerce\elements\db\OrderQuery;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Order;
 use craft\commerce\models\ShippingMethod;
-use craft\commerce\services\ShippingMethods;
 use craft\events\DefineBehaviorsEvent;
-use craft\events\ElementEvent;
-use craft\events\ModelEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\TemplateEvent;
-use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Elements;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
-use QD\commerce\webshipper\base\PluginTrait;
 use QD\commerce\webshipper\behaviors\OrderBehavior;
 use QD\commerce\webshipper\behaviors\OrderQueryBehavior;
 use QD\commerce\webshipper\behaviors\ShippingMethodBehavior;
 use QD\commerce\webshipper\helpers\Connector;
 use QD\commerce\webshipper\models\Settings;
-use QD\commerce\webshipper\twigextensions\Extension;
+use QD\commerce\webshipper\plugin\Services;
 use QD\commerce\webshipper\variables\WebshipperVariable;
 use yii\base\Event;
 
 class Webshipper extends \craft\base\Plugin
 {
 
-	use PluginTrait;
+	use Services;
 
 	// Static Properties
 	// =========================================================================
@@ -71,7 +66,6 @@ class Webshipper extends \craft\base\Plugin
 
 		// Install event listeners
 		$this->setPluginComponents();
-		$this->registerTwigExtensions();
 		$this->registerVariables();
 		$this->installEventListeners();
 		$this->registerCommerceEventListeners();
@@ -166,28 +160,28 @@ class Webshipper extends \craft\base\Plugin
 			return Craft::$app->view->renderTemplate('commerce-webshipper/order/shipments', $context);
 		});
 
+		Craft::$app->view->hook('cp.commerce.shippingMethods.edit.content', function (&$context) {
+			$shippingMethod = $context['shippingMethod'];
+			$webshipper = new Connector();
+			$context['webshipperRateId'] = $shippingMethod->getWebshipperRateId();
+			$webshipperRates = $webshipper->getShippingRates();
+
+			$rates = [
+				null => '---'
+			];
+
+			foreach ($webshipperRates as $rate) {
+				$rates[$rate['id']] = $rate['attributes']['name'];
+			}
+
+			$context['webshipperRates'] = $rates;
+			return Craft::$app->view->renderTemplate('commerce-webshipper/shippingmethod/edit', $context);
+		});
+
 		/**
 		 * Product edit page - add webshipper tab
-		 * TODO Implement product location + (tarif number + manufacture origin for automatic customs)
+		 * TODO Implement product location + (tarif number + Country of Origin for automatic customs)
 		 */
-		// Craft::$app->view->hook('cp.commerce.shippingmethod.edit', function (&$context) {
-		// 	$shippingMethod = $context['shippingMethod'];
-		// 	$webshipper = new Connector();
-		// 	$context['webshipperRateId'] = $shippingMethod->getWebshipperRateId();
-		// 	$webshipperRates = $webshipper->getShippingRates();
-
-		// 	$rates = [
-		// 		'' => '---'
-		// 	];
-
-		// 	foreach ($webshipperRates as $rate) {
-		// 		$rates[$rate['id']] = $rate['attributes']['name'];
-		// 	}
-
-		// 	$context['webshipperRates'] = $rates;
-		// 	return Craft::$app->view->renderTemplate('commerce-webshipper/shippingmethod/edit', $context);
-		// });
-
 		/**
 		 * Product edit page - add webshipper tab
 		 */
@@ -200,9 +194,10 @@ class Webshipper extends \craft\base\Plugin
 		// 		];
 		// 	}
 		// });
-		// Craft::$app->view->hook('cp.commerce.product.edit.content', function (&$context) {
-		// 	return Craft::$app->view->renderTemplate('commerce-webshipper/product/edit', $context);
-		// });
+
+		Craft::$app->view->hook('cp.commerce.product.edit.content', function (&$context) {
+			return Craft::$app->view->renderTemplate('commerce-webshipper/product/edit', $context);
+		});
 
 		/**
 		 * Register webshipper plugin admin routes
@@ -216,11 +211,6 @@ class Webshipper extends \craft\base\Plugin
 
 	// Private Methods
 	// =========================================================================
-
-	private function registerTwigExtensions()
-	{
-		Craft::$app->view->registerTwigExtension(new Extension);
-	}
 
 	private function registerVariables()
 	{

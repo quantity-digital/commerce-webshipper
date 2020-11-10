@@ -66,7 +66,6 @@ class OrderQueryBehavior extends Behavior
 			'webshipper.droppointId',
 		]);
 
-		// Apply "first" param:
 		if (!is_null($this->webshipperId)) {
 			$this->owner->subQuery->andWhere(Db::parseParam('webshipper.webshipperId', $this->webshipperId));
 		}

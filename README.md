@@ -1,4 +1,4 @@
-<p><img src="./src/icon.svg" width="100" height="100" alt="QuickPay for Craft Commerce icon"></p>
+<p><img src="./src/icon.svg" width="100" height="100" alt="Webshipper for Craft Commerce icon"></p>
 
 # Webshipper for Craft Commerce
 
@@ -6,7 +6,7 @@ This plugin provides an [Webshipper](https://webshipper.dk/) integration for [Cr
 
 ## Requirements
 
-This plugin requires Craft CMS 3.5.0 and Craft Commerce 3.2.0 or later.
+This plugin requires Craft CMS 3.5.0 and Craft Commerce 3.2.9 or later.
 
 ## Installation
 
@@ -28,12 +28,12 @@ cd /path/to/my-project.test
 composer require quantity-digital/commerce-webshipper
 
 # tell Craft to install the plugin
-./craft install/plugin quantity-digital/commerce-webshipper
+./craft install/plugin commerce-webshipper
 ```
 
 ## Setup
 
-This plugin will, after you have filled in the required settings on the settings page, add a new field on Craft's default shipping methods, where you can connect a shipping method in Craft to the shipping method in Webshipper.
+This plugin will, after you have filled in the required settings on the settings page, add a new field on Craft's default shipping methods editor screen, where you can connect a shipping method in Craft to the shipping method in Webshipper.
 
 All syncronizations between Craft and Webshipper is handled automaticly using Craft Queue.
 

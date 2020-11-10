@@ -49,7 +49,8 @@ class Install extends Migration
 			'id' => $this->primaryKey(),
 			'orderId' => $this->integer()->notNull(),
 			'webshipperId' => $this->integer()->notNull(),
-			'trackingLink' => $this->string(),
+			'packageCount' => $this->integer()->null(),
+			'trackingLink' => $this->string()->null(),
 			'dateCreated' => $this->dateTime()->notNull(),
 			'dateUpdated' => $this->dateTime()->notNull(),
 			'uid' => $this->uid(),
@@ -125,7 +126,7 @@ class Install extends Migration
 		$this->addForeignKey($this->db->getForeignKeyName('{{%webshipper_shipment_lines}}', 'lineItemId'), '{{%webshipper_shipment_lines}}', 'lineItemId', '{{%commerce_lineitems}}', 'id', 'CASCADE', 'CASCADE');
 		$this->addForeignKey($this->db->getForeignKeyName('{{%webshipper_shipment_lines}}', 'shipmentId'), '{{%webshipper_shipment_lines}}', 'shipmentId', '{{%webshipper_shipments}}', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey(null, '{{%webshipper_orderinfo}}', ['id'], '{{%commerce_orders}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%webshipper_shippingmethods}}', ['id'], '{{%commerce_orders}}', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, '{{%webshipper_shippingmethods}}', ['id'], '{{%commerce_shippingmethods}}', ['id'], 'CASCADE', 'CASCADE');
 	}
 
 	/**

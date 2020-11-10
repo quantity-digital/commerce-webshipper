@@ -1,13 +1,13 @@
 <?php
 
-namespace QD\commerce\webshipper\base;
+namespace QD\commerce\webshipper\plugin;
 
 
 use QD\commerce\webshipper\services\Orders;
 use QD\commerce\webshipper\services\ShipmentLines;
 use QD\commerce\webshipper\services\Shipments;
 
-trait PluginTrait
+trait Services
 {
 	// Static Properties
 	// =========================================================================

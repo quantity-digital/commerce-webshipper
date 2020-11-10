@@ -118,12 +118,10 @@ class Shipments extends Component
 
 			try {
 				$success = $shipmentRecord->save(false);
-
 				if ($success) {
 					if ($isNewShipment) {
 						$shipment->id = $shipmentRecord->id;
 					}
-
 					$transaction->commit();
 				}
 			} catch (Throwable $e) {
@@ -146,16 +144,15 @@ class Shipments extends Component
 				$unfulfilledStatus = Commerce::getInstance()->getOrderStatuses()->getOrderStatusByHandle($settings->partiallyFulfilledStatus);
 				$fulfilledStatus = Commerce::getInstance()->getOrderStatuses()->getOrderStatusByHandle($settings->fulfilledStatus);
 
-				if(count($unfulfilled) && $unfulfilledStatus){
+				if (count($unfulfilled) && $unfulfilledStatus) {
 					$order->orderStatusId = $unfulfilledStatus->id;
 					Craft::$app->getElements()->saveElement($order);
 				}
 
-				if(!count($unfulfilled) && $fulfilledStatus){
+				if (!count($unfulfilled) && $fulfilledStatus) {
 					$order->orderStatusId = $fulfilledStatus->id;
 					Craft::$app->getElements()->saveElement($order);
 				}
-
 			}
 
 			return $success;

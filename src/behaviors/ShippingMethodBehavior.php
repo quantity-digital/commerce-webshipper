@@ -5,9 +5,6 @@ namespace QD\commerce\webshipper\behaviors;
 use Craft;
 use craft\commerce\models\ShippingMethod;
 use craft\db\Query;
-use craft\helpers\Db;
-use QD\commerce\webshipper\helpers\Connector;
-use QD\commerce\webshipper\Webshipper;
 use yii\base\Behavior;
 
 class ShippingMethodBehavior extends Behavior
