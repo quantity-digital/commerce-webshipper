@@ -43,7 +43,7 @@ class ShippingMethodBehavior extends Behavior
 			->where('id = :id', array(':id' => $this->owner->id))
 			->one();
 
-		return $row['webshipperRateId'];
+		return isset($row['webshipperRateId']) ? $row['webshipperRateId'] : null;
 	}
 
 	public function saveShippingInfo($event)

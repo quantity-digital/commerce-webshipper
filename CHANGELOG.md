@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.2 - 2020-11-17
+
+* Fixed error where `getWebshipperRateId` whould throw a notice when no rows was found
+
 ## 1.0.1 - 2020-11-12
 
 ### Fixed
