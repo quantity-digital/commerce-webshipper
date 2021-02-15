@@ -18,6 +18,11 @@ class WebhookController extends Controller
 		'shipment-created' => self::ALLOW_ANONYMOUS_LIVE | self::ALLOW_ANONYMOUS_OFFLINE,
 	];
 
+	/**
+	 * @inheritdoc
+	 */
+	public $enableCsrfValidation = false;
+
 	public function actionShipmentCreated()
 	{
 		$request = Craft::$app->getRequest();
@@ -36,8 +41,9 @@ class WebhookController extends Controller
 
 		//Set tracking no
 		$shipment->webshipperId  = $data->id ? $data->id : 0;
-		$shipment->trackingLink = $data->attributes->tracking_links[0]->url;
+		$shipment->trackingLink = isset($data->attributes->tracking_links[0]) ? $data->attributes->tracking_links[0]->url : '';
 		$packagesCount = 0;
+
 		//Add shipment lines
 		foreach ($data->attributes->packages as $package) {
 			foreach ($package->order_lines as $orderLine) {
