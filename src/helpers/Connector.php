@@ -23,8 +23,14 @@ class Connector
 		$Webshipper = Webshipper::getInstance()->getSettings();
 		$token = Craft::parseEnv($Webshipper->secretToken);
 		$accountName = Craft::parseEnv($Webshipper->accountName);
+		$useStaging = getenv('WEBSHIPPER_USESTAGING');
 
-		$this->client = new Client(array('base_uri' => "https://{$accountName}.api.webshipper.io/v2/"));
+		if ($useStaging) {
+			$this->client = new Client(array('base_uri' => "https://{$accountName}.api.staging.webshipper.io/v2/"));
+		} else {
+			$this->client = new Client(array('base_uri' => "https://{$accountName}.api.webshipper.io/v2/"));
+		}
+
 
 		$this->options['headers'] = [
 			'Authorization' => 'Bearer ' . $token,
