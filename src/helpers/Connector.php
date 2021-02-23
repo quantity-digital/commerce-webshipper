@@ -181,12 +181,12 @@ class Connector
 					break;
 				}
 			}
-			$vat = $amount / (($orderItem->snapshot['price'] * $orderItem->qty) - $amount) * 100;
+			$vat = $amount / (($orderItem->subtotal * $orderItem->qty) - $amount) * 100;
 			$orderItems[] = [
 				"sku" => $orderItem->SKU,
 				"description" => $orderItem->getDescription(),
 				"quantity" => $orderItem->qty,
-				"unit_price" => $orderItem->snapshot['price'],
+				"unit_price" => $orderItem->total / $orderItem->qty,
 				"vat_percent" => $vat,
 			];
 		}
