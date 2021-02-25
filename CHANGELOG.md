@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.7 - 2021-02-25
+
+### Changed
+
+* Added new helper class `QD\commerce\webshipper\helpers\Log` which logs errors to a webshipper.log file
+* `SyncOrder` updated to handle scenarios where the order was created in webshipper, but the id wasn't stored in Craft
+* Added error loggers
+
 ## 1.0.6 - 2021-02-23
 
 ### Fixed

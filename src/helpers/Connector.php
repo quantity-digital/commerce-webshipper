@@ -242,11 +242,27 @@ class Connector
 		$request = $this->request('orders');
 
 		if (!$request) {
-			return [];
+			return false;
 		}
 
 		$decoded = $request->asArray();
 		return $decoded;
+	}
+
+	public function getOrderByExtRef($extRef)
+	{
+		$this->setMethod('GET');
+		$request = $this->request('orders?filter[ext_ref]=' . $extRef);
+
+		if (!$request) {
+			Log::info('Connector, getOrderByExtRef: Request failed');
+			return false;
+		}
+
+		$decoded = $request->asArray();
+		return [
+			'data' => $decoded['data'][0]
+		];
 	}
 
 	/**
@@ -298,13 +314,15 @@ class Connector
 	 */
 	protected function request($uri)
 	{
+
 		try {
 			$request = $this->client->request($this->method, $uri, $this->options);
 		} catch (BadResponseException $e) {
-			//TODO Create error logging
 			$response = $e->getResponse();
 			$responseBodyAsString = $response->getBody()->getContents();
-			return false;
+			Log::error($responseBodyAsString);
+			$this->response = $responseBodyAsString;
+			return $this;
 		}
 
 		$this->response = $request->getBody()->getContents();
