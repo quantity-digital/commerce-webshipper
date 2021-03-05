@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.8 - 2021-03-05
+
+### Changed
+
+* Updated error logging
+
+### Fixed
+
+* Fixed unit_price not subtracting VAT amount on lineitems
+
 ## 1.0.7 - 2021-02-25
 
 ### Changed
@@ -37,3 +47,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 1.0.0 - 2020-11-10
 
 Initial release of the Webshipper plugin to the Craft Store
+

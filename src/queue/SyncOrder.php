@@ -82,13 +82,13 @@ class SyncOrder extends BaseJob implements RetryableJobInterface
 
 			//Store webshipper Id in database
 			$this->setProgress($queue, 0.95, 'Saving webshipper id to database');
-			$order->webshipperId = $response['data']['id'];
+			$order->webshipperId = (int)$response['data']['id'];
 
 			try {
 				Craft::$app->getElements()->saveElement($order);
 			} catch (\Throwable $th) {
 				Log::error('Failed to store webshipper ID');
-				Log::error($order->getAllErrors()[0]);
+				Log::error("'Failed to store webshipper ID'" . implode(', ', $order->getFirstErrors()));
 				$this->setProgress($queue, 1);
 				$this->reAddToQueue();
 				return;

@@ -172,6 +172,7 @@ class Connector
 
 		//Create order items
 		$orderItems = [];
+
 		foreach ($order->getLineItems() as $orderItem) {
 			$adjustments = $orderItem->getAdjustments();
 			$amount = 0;
@@ -181,13 +182,16 @@ class Connector
 					break;
 				}
 			}
-			$vat = $amount / (($orderItem->subtotal * $orderItem->qty) - $amount) * 100;
+
+			$vatDecimal = $amount / (($orderItem->subtotal * $orderItem->qty) - $amount);
+			$vatPercentage = $vatDecimal * 100;
+
 			$orderItems[] = [
 				"sku" => $orderItem->SKU,
 				"description" => $orderItem->getDescription(),
 				"quantity" => $orderItem->qty,
-				"unit_price" => $orderItem->total / $orderItem->qty,
-				"vat_percent" => $vat,
+				"unit_price" => ($orderItem->total / $orderItem->qty) - $amount,
+				"vat_percent" => $vatPercentage,
 			];
 		}
 
