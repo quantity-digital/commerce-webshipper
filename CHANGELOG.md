@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.9 - 2021-03-07
+
+### Added
+
+* Added `EVENT_BEFORE_CREATE_ORDER_ITEMS` to `createOrder` function in `helpers\Connector` to make it possible to override what orderlines gets sent to Webshipper
+* Added new webhook for `order/delete` event in Webshipper, to allow an order to be deleted from either the webshop or Webshipper.
+
+### Changed
+
+* Updated ordersync to now include original shipping from the webshop
+* `helpers\Connector` now extends `yii\base\Component`
+* Adjusted error loggin in `SyncOrder` job
+
+
+
+### Fixed
+
+* Fixed error where Sync-jobs always was being readded to the queue, even if they were succesfull
+* Fixed twig filtering error on shipments tempate for the order page
+
 ## 1.0.8 - 2021-03-05
 
 ### Changed

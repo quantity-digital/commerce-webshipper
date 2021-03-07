@@ -38,6 +38,7 @@ class SyncOrder extends BaseJob implements RetryableJobInterface
 			// Create order in webshipper
 			$this->setProgress($queue, 0.3, 'Creating order in webshipper');
 			$webshipper = new Connector();
+			$this->setProgress($queue, 0.35, 'Connector ready, syncing order');
 			$response = $webshipper->createOrder($order);
 
 			// Response failed, readd to queu
@@ -84,17 +85,14 @@ class SyncOrder extends BaseJob implements RetryableJobInterface
 			$this->setProgress($queue, 0.95, 'Saving webshipper id to database');
 			$order->webshipperId = (int)$response['data']['id'];
 
-			try {
-				Craft::$app->getElements()->saveElement($order);
-			} catch (\Throwable $th) {
-				Log::error('Failed to store webshipper ID');
-				Log::error("'Failed to store webshipper ID'" . implode(', ', $order->getFirstErrors()));
+			if (!Craft::$app->getElements()->saveElement($order)) {
+				Log::error('Failed to store webshipper ID: ' . implode(',', $order->getErrors()));
 				$this->setProgress($queue, 1);
 				$this->reAddToQueue();
 				return;
 			}
 
-			$this->reAddToQueue();
+			$this->setProgress($queue, 1);
 			return;
 		}
 	}

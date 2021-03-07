@@ -6,14 +6,18 @@ use Craft;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use QD\commerce\webshipper\events\CustomOrderLinesEvent;
 use QD\commerce\webshipper\Webshipper;
+use yii\base\Component;
 
-class Connector
+class Connector extends Component
 {
 	public $method = 'GET';
 	public $client;
 	public $response;
 	public $options = [];
+
+	const EVENT_BEFORE_CREATE_ORDER_ITEMS = 'beforeCreateOrderItems';
 
 	// Public Methods
 	// =========================================================================
@@ -140,60 +144,105 @@ class Connector
 	public function createOrder($order, $customOrderId = null)
 	{
 		$settings = Webshipper::getInstance()->getSettings();
-
-		//Create billing info
-		$billingObject = $order->getBillingAddress();
-		$billingAddress = [
-			'address_1'    => $billingObject->address1,
-			'city'         => $billingObject->city,
-			'att_contact'  => $billingObject->firstName . ' ' . $billingObject->lastName,
-			'country_code' => $billingObject->country->iso,
-			'phone'        => $billingObject->phone,
-			'zip'          => $billingObject->zipCode,
-			'state' 	   => $billingObject->stateName,
-			'email'        => $order->Email,
-			'company_name' => $billingObject->businessName
-		];
+		$shippingAddress = null;
+		$billingAddress = null;
 
 		//Create delivery info
 		$shippingObject = $order->getShippingAddress();
-		$shippingAddress = [
-			'address_1'    => $shippingObject->address1,
-			'city'         => $shippingObject->city,
-			'att_contact'  => $shippingObject->firstName . ' ' . $shippingObject->lastName,
-			'country_code' => $shippingObject->country->iso,
-			'phone'        => $shippingObject->phone,
-			'zip'          => $shippingObject->zipCode,
-			'state' 	   => $shippingObject->stateName,
-			'email'        => $order->Email,
-			'company_name' => $shippingObject->businessName
-		];
+		if ($shippingObject) {
+			$shippingAddress = [
+				'address_1'    => $shippingObject->address1,
+				'city'         => $shippingObject->city,
+				'att_contact'  => $shippingObject->firstName . ' ' . $shippingObject->lastName,
+				'country_code' => $shippingObject->country->iso,
+				'phone'        => $shippingObject->phone,
+				'zip'          => $shippingObject->zipCode,
+				'state' 	   => $shippingObject->stateName,
+				'email'        => $order->Email,
+				'company_name' => $shippingObject->businessName
+			];
+		}
 
+		//Create billing info
+		$billingObject = $order->getBillingAddress();
+		if ($billingObject) {
+			$billingAddress = [
+				'address_1'    => $billingObject->address1,
+				'city'         => $billingObject->city,
+				'att_contact'  => $billingObject->firstName . ' ' . $billingObject->lastName,
+				'country_code' => $billingObject->country->iso,
+				'phone'        => $billingObject->phone,
+				'zip'          => $billingObject->zipCode,
+				'state' 	   => $billingObject->stateName,
+				'email'        => $order->Email,
+				'company_name' => $billingObject->businessName
+			];
+		}
+
+		if (!$billingAddress && $shippingAddress) {
+			$billingAddress = $shippingAddress;
+		}
+
+		if (!$shippingAddress && $billingAddress) {
+			$shippingAddress = $billingAddress;
+		}
 
 		//Create order items
 		$orderItems = [];
 
-		foreach ($order->getLineItems() as $orderItem) {
-			$adjustments = $orderItem->getAdjustments();
-			$amount = 0;
-			foreach ($adjustments as $adjustment) {
-				if ($adjustment->type === 'tax') {
-					$amount = $adjustment->amount;
-					break;
-				}
-			}
+		$orderItemsEvent = new CustomOrderLinesEvent([
+			'order' => $order,
+			'orderItems' => $orderItems,
+			'useOnlyCustom' => false
+		]);
 
-			$vatDecimal = $amount / (($orderItem->subtotal * $orderItem->qty) - $amount);
-			$vatPercentage = $vatDecimal * 100;
-
-			$orderItems[] = [
-				"sku" => $orderItem->SKU,
-				"description" => $orderItem->getDescription(),
-				"quantity" => $orderItem->qty,
-				"unit_price" => ($orderItem->total / $orderItem->qty) - $amount,
-				"vat_percent" => $vatPercentage,
-			];
+		// Allow plugins to modify captured Plan data
+		if ($this->hasEventHandlers(self::EVENT_BEFORE_CREATE_ORDER_ITEMS)) {
+			$this->trigger(self::EVENT_BEFORE_CREATE_ORDER_ITEMS, $orderItemsEvent);
 		}
+
+		$orderItems = $orderItemsEvent->orderItems;
+
+		if (!$orderItemsEvent->useOnlyCustom) {
+			foreach ($order->getLineItems() as $orderItem) {
+				$adjustments = $orderItem->getAdjustments();
+				$amount = 0;
+				foreach ($adjustments as $adjustment) {
+					if ($adjustment->type === 'tax') {
+						$amount = $adjustment->amount;
+						break;
+					}
+				}
+
+				$vatDecimal = $amount / (($orderItem->subtotal * $orderItem->qty) - $amount);
+				$vatPercentage = $vatDecimal * 100;
+
+				$orderItems[] = [
+					"sku" => $orderItem->SKU,
+					"description" => $orderItem->getDescription(),
+					"quantity" => $orderItem->qty,
+					"unit_price" => ($orderItem->total / $orderItem->qty) - $amount,
+					"vat_percent" => $vatPercentage,
+				];
+			}
+		}
+
+		// Get shipping costs
+		$shippingMethod = $order->getShippingMethod();
+		$price = 0;
+
+		foreach ($order->getAdjustments() as $adjustment) {
+			if ($adjustment->type === 'shipping') {
+				$price += $adjustment->amount;
+			}
+		}
+
+		$originalShipping = [
+			'price' => $price,
+			'vat_percent' => $vatPercentage,
+			'shipping_name' => isset($shippingMethod->name) ? $shippingMethod->name : '-',
+			'shipping_code' => isset($shippingMethod->handle) ? $shippingMethod->handle : '-'
+		];
 
 		//Combine all shipping data
 		$shippingData = [
@@ -205,6 +254,7 @@ class Connector
 					'delivery_address' => $shippingAddress,
 					'order_lines'      => $orderItems,
 					'currency'         => $order->currency,
+					'original_shipping' => $originalShipping
 				],
 				'relationships' => [
 					'order_channel' => [

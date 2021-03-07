@@ -16,6 +16,7 @@ class WebhookController extends Controller
 	 */
 	public $allowAnonymous = [
 		'shipment-created' => self::ALLOW_ANONYMOUS_LIVE | self::ALLOW_ANONYMOUS_OFFLINE,
+		'order-deleted' => self::ALLOW_ANONYMOUS_LIVE | self::ALLOW_ANONYMOUS_OFFLINE,
 	];
 
 	/**
@@ -68,5 +69,24 @@ class WebhookController extends Controller
 
 		//Save shipment
 		$shipmentService->saveShipment($shipment);
+	}
+
+	public function actionOrderDeleted()
+	{
+		$request = Craft::$app->getRequest();
+
+		//Only allow webshipper webhook to call this action
+		WebshipperHelper::verifyWebhook($request);
+
+		$body = json_decode($request->getRawBody());
+		$data = $body->data;
+
+		// Find order in commerce
+		$order = Order::find()->reference($data->attributes->reference)->one();
+
+		// Delete order in commerce if it exists
+		if ($order) {
+			Craft::$app->elements->deleteElement($order);
+		}
 	}
 }

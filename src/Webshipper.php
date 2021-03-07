@@ -117,6 +117,7 @@ class Webshipper extends \craft\base\Plugin
 			function (RegisterUrlRulesEvent $event) {
 				$event->rules = array_merge($event->rules, [
 					'craftapi/webshipper/v1/webhook/shipment/created' => 'commerce-webshipper/webhook/shipment-created',
+					'craftapi/webshipper/v1/webhook/order/deleted' => 'commerce-webshipper/webhook/order-deleted',
 					'craftapi/webshipper/droppoint/locator' => 'commerce-webshipper/frontend/droppoint-locator'
 				]);
 			}
