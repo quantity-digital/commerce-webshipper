@@ -196,7 +196,7 @@ class Connector extends Component
 			'useOnlyCustom' => false
 		]);
 
-		// Allow plugins to modify captured Plan data
+		// Allow plugins to modify orderitems, and completely override the orders orderitems
 		if ($this->hasEventHandlers(self::EVENT_BEFORE_CREATE_ORDER_ITEMS)) {
 			$this->trigger(self::EVENT_BEFORE_CREATE_ORDER_ITEMS, $orderItemsEvent);
 		}
@@ -221,7 +221,7 @@ class Connector extends Component
 					"sku" => $orderItem->SKU,
 					"description" => $orderItem->getDescription(),
 					"quantity" => $orderItem->qty,
-					"unit_price" => ($orderItem->total / $orderItem->qty) - $amount,
+					"unit_price" => (($orderItem->total - $amount) / $orderItem->qty),
 					"vat_percent" => $vatPercentage,
 				];
 			}

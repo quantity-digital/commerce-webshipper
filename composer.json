@@ -2,7 +2,7 @@
 	"name": "quantity-digital/commerce-webshipper",
 	"description": "Webshipper integration for Craft Commerce 3",
 	"type": "craft-plugin",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"keywords": [
 		"craft",
 		"cms",

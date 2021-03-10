@@ -42,33 +42,34 @@ class OrderBehavior extends Behavior
 	}
 
 	/**
-     * Returns the shipments for the order, or null if the order is not saved.
-     *
-     * @return Shipment[]|null
-     */
-    public function getShipments()
-    {
-        if (!$this->shipments) {
-            /* @var Order $order */
-            $order = $this->owner;
+	 * Returns the shipments for the order, or null if the order is not saved.
+	 *
+	 * @return Shipment[]|null
+	 */
+	public function getShipments()
+	{
+		if (!$this->shipments) {
+			/* @var Order $order */
+			$order = $this->owner;
 
-            // Ensure the order is saved.
-            if (!$order->id) {
-                return null;
-            }
+			// Ensure the order is saved.
+			if (!$order->id) {
+				return null;
+			}
 
-            $this->shipments = Webshipper::getInstance()->getShipments()->getShipmentsByOrder($order);
-        }
+			$this->shipments = Webshipper::getInstance()->getShipments()->getShipmentsByOrder($order);
+		}
 
-        return $this->shipments;
-    }
+		return $this->shipments;
+	}
 
 	/**
 	 * Returns the link for the order on the webshipper page
 	 *
 	 * @return void
 	 */
-	public function getWebshipperLink(){
+	public function getWebshipperLink()
+	{
 		$webshipperId = $this->owner->webshipperId;
 		$accountName = Craft::parseEnv(Webshipper::getInstance()->getSettings()->accountName);
 
@@ -76,26 +77,33 @@ class OrderBehavior extends Behavior
 	}
 
 	/**
-     * Returns the most recent shipment for the order,
-     * or null if the order is not saved or has no shipments.
-     *
-     * @return Shipment|null
-     */
-    public function getLastShipment()
-    {
-        $shipments = $this->getShipments();
+	 * Returns the most recent shipment for the order,
+	 * or null if the order is not saved or has no shipments.
+	 *
+	 * @return Shipment|null
+	 */
+	public function getLastShipment()
+	{
+		$shipments = $this->getShipments();
 
-        return $shipments ? $shipments[0] : null;
-    }
+		return $shipments ? $shipments[0] : null;
+	}
 
 	public function setOrderInfo()
 	{
-		// If droppointId is set, store it on the order
 		$request = Craft::$app->getRequest();
-		$droppointId = $request->getParam('droppointId');
+		if (!$request->getIsConsoleRequest() && \method_exists($request, 'getParam')) {
+			// If droppointId is set, store it on the order
+			$droppointId = $request->getParam('droppointId');
+			$webshipperId = $request->getParam('webshipperId');
 
-		if ($droppointId !== NULL) {
-			$this->droppointId = $droppointId;
+			if ($droppointId !== NULL) {
+				$this->droppointId = $droppointId;
+			}
+
+			if ($webshipperId !== NULL) {
+				$this->webshipperId = $webshipperId;
+			}
 		}
 	}
 
@@ -107,11 +115,11 @@ class OrderBehavior extends Behavior
 	public function saveOrderInfo()
 	{
 		$data = [];
-		if($this->webshipperId){
+		if ($this->webshipperId) {
 			$data['webshipperId'] = $this->webshipperId;
 		}
 
-		if($this->droppointId !== null){
+		if ($this->droppointId !== null) {
 			$data['droppointId'] = $this->droppointId;
 		}
 
@@ -124,9 +132,3 @@ class OrderBehavior extends Behavior
 		}
 	}
 }
-
-
-
-
-
-

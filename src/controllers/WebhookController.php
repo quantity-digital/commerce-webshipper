@@ -4,7 +4,6 @@ namespace QD\commerce\webshipper\controllers;
 
 use Craft;
 use craft\commerce\elements\Order;
-use craft\commerce\Plugin as Commerce;
 use craft\web\Controller;
 use QD\commerce\webshipper\helpers\WebshipperHelper;
 use QD\commerce\webshipper\Webshipper;
@@ -82,7 +81,7 @@ class WebhookController extends Controller
 		$data = $body->data;
 
 		// Find order in commerce
-		$order = Order::find()->reference($data->attributes->reference)->one();
+		$order = Order::find()->reference($data->attributes->visible_ref)->one();
 
 		// Delete order in commerce if it exists
 		if ($order) {

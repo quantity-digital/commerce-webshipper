@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.10 - 2021-03-11
+
+### Fixed
+
+* Fixed error in OrderBehaviour that prevent queue jobs executed by console to run
+
 ## 1.0.9 - 2021-03-07
 
 ### Added
@@ -16,8 +22,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Updated ordersync to now include original shipping from the webshop
 * `helpers\Connector` now extends `yii\base\Component`
 * Adjusted error loggin in `SyncOrder` job
-
-
 
 ### Fixed
 
