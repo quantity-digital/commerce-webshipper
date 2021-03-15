@@ -2,7 +2,7 @@
 
 namespace QD\commerce\webshipper\migrations;
 
-Use Craft;
+use Craft;
 use craft\db\Migration;
 use craft\helpers\MigrationHelper;
 
@@ -67,17 +67,18 @@ class Install extends Migration
 		]);
 
 		$this->createTable('{{%webshipper_orderinfo}}', [
-            'id' => $this->integer()->notNull(),
-            'webshipperId' => $this->string()->null(),
-            'droppointId' => $this->string()->null(),
-            'PRIMARY KEY([[id]])',
-        ]);
+			'id' => $this->integer()->notNull(),
+			'webshipperId' => $this->string()->null(),
+			'droppointId' => $this->string()->null(),
+			'droppointSnapshot' => $this->json()->null(),
+			'PRIMARY KEY([[id]])',
+		]);
 
 		$this->createTable('{{%webshipper_shippingmethods}}', [
-            'id' => $this->integer()->notNull(),
-            'webshipperRateId' => $this->string()->null(),
-            'PRIMARY KEY([[id]])',
-        ]);
+			'id' => $this->integer()->notNull(),
+			'webshipperRateId' => $this->string()->null(),
+			'PRIMARY KEY([[id]])',
+		]);
 	}
 
 	/**
@@ -125,8 +126,8 @@ class Install extends Migration
 		$this->addForeignKey($this->db->getForeignKeyName('{{%webshipper_shipments}}', 'orderId'), '{{%webshipper_shipments}}', 'orderId', '{{%commerce_orders}}', 'id', 'CASCADE', 'CASCADE');
 		$this->addForeignKey($this->db->getForeignKeyName('{{%webshipper_shipment_lines}}', 'lineItemId'), '{{%webshipper_shipment_lines}}', 'lineItemId', '{{%commerce_lineitems}}', 'id', 'CASCADE', 'CASCADE');
 		$this->addForeignKey($this->db->getForeignKeyName('{{%webshipper_shipment_lines}}', 'shipmentId'), '{{%webshipper_shipment_lines}}', 'shipmentId', '{{%webshipper_shipments}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%webshipper_orderinfo}}', ['id'], '{{%commerce_orders}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%webshipper_shippingmethods}}', ['id'], '{{%commerce_shippingmethods}}', ['id'], 'CASCADE', 'CASCADE');
+		$this->addForeignKey(null, '{{%webshipper_orderinfo}}', ['id'], '{{%commerce_orders}}', ['id'], 'CASCADE', 'CASCADE');
+		$this->addForeignKey(null, '{{%webshipper_shippingmethods}}', ['id'], '{{%commerce_shippingmethods}}', ['id'], 'CASCADE', 'CASCADE');
 	}
 
 	/**

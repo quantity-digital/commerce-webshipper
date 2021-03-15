@@ -64,6 +64,7 @@ class OrderQueryBehavior extends Behavior
 		$this->owner->query->addSelect([
 			'webshipper.webshipperId',
 			'webshipper.droppointId',
+			'webshipper.droppointSnapshot',
 		]);
 
 		if (!is_null($this->webshipperId)) {

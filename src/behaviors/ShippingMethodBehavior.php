@@ -14,8 +14,6 @@ class ShippingMethodBehavior extends Behavior
 	 */
 	public $webshipperRateId;
 
-	private $droppoints;
-
 	/**
 	 * @var string Table name where extra info is stored
 	 */

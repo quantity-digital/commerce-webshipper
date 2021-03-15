@@ -18,6 +18,7 @@ class OrderBehavior extends Behavior
 	 * @var string|null
 	 */
 	public $droppointId = NULL;
+	public $droppointSnapshot;
 
 	private $shipments;
 
@@ -95,6 +96,7 @@ class OrderBehavior extends Behavior
 		if (!$request->getIsConsoleRequest() && \method_exists($request, 'getParam')) {
 			// If droppointId is set, store it on the order
 			$droppointId = $request->getParam('droppointId');
+			$droppointSnapshot = $request->getParam('droppointSnapshot');
 			$webshipperId = $request->getParam('webshipperId');
 
 			if ($droppointId !== NULL) {
@@ -103,6 +105,10 @@ class OrderBehavior extends Behavior
 
 			if ($webshipperId !== NULL) {
 				$this->webshipperId = $webshipperId;
+			}
+
+			if ($droppointSnapshot !== NULL) {
+				$this->droppointSnapshot = $droppointSnapshot;
 			}
 		}
 	}
@@ -121,6 +127,10 @@ class OrderBehavior extends Behavior
 
 		if ($this->droppointId !== null) {
 			$data['droppointId'] = $this->droppointId;
+		}
+
+		if ($this->droppointSnapshot !== null) {
+			$data['droppointSnapshot'] = $this->droppointSnapshot;
 		}
 
 		if ($data) {

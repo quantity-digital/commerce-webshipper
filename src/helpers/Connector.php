@@ -3,9 +3,11 @@
 namespace QD\commerce\webshipper\helpers;
 
 use Craft;
+use craft\helpers\Json;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use QD\commerce\webshipper\events\BeforeCreateOrderEvent;
 use QD\commerce\webshipper\events\CustomOrderLinesEvent;
 use QD\commerce\webshipper\Webshipper;
 use yii\base\Component;
@@ -18,6 +20,7 @@ class Connector extends Component
 	public $options = [];
 
 	const EVENT_BEFORE_CREATE_ORDER_ITEMS = 'beforeCreateOrderItems';
+	const EVENT_BEFORE_CREATE_ORDER = 'beforeCreateOrder';
 
 	// Public Methods
 	// =========================================================================
@@ -275,7 +278,13 @@ class Connector extends Component
 
 		//If order has a droppoint, attatch to shippingdata
 		if ($order->droppointId) {
-			$dropPoint = $this->getDropPointData($shippingObject->zipCode, $order->droppointId, $shippingObject->country->iso, $order->getShippingMethod()->getWebshipperRateId());
+
+			if ($order->droppointSnapshot) {
+				$dropPoint = Json::decode($order->droppointSnapshot);
+			} else {
+				$dropPoint = $this->getDropPointData($shippingObject->zipCode, $order->droppointId, $shippingObject->country->iso, $order->getShippingMethod()->getWebshipperRateId());
+			}
+
 			if ($dropPoint) {
 				$dynamicAddress = array(
 					'drop_point_id' => $order->droppointId,
@@ -290,8 +299,17 @@ class Connector extends Component
 			}
 		}
 
+		$createOrderEvent = new BeforeCreateOrderEvent([
+			'order' => $order,
+			'shippingData' => $shippingData
+		]);
+
+		// Allow plugins to modify orderitems, and completely override the orders orderitems
+		if ($this->hasEventHandlers(self::EVENT_BEFORE_CREATE_ORDER)) {
+			$this->trigger(self::EVENT_BEFORE_CREATE_ORDER, $createOrderEvent);
+		}
 		$this->setMethod('POST');
-		$this->options['json'] = $shippingData;
+		$this->options['json'] = $createOrderEvent->shippingData;
 
 		$request = $this->request('orders');
 

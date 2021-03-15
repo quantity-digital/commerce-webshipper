@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.12 - 2021-03-15
+
+### Added
+
+* Added `droppointSnaphot` to `webshipper_orderinfo`, to make i possible to save data about the droppoint during checkout.
+* Added `EVENT_BEFORE_CREATE_ORDER` to make it possible to modify shippingdata sent to webshipper
+
 ## 1.0.11 - 2021-03-11
 
 ### Fixed
@@ -77,4 +84,3 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 1.0.0 - 2020-11-10
 
 Initial release of the Webshipper plugin to the Craft Store
-
