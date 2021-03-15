@@ -4,12 +4,11 @@ namespace QD\commerce\webshipper\migrations;
 
 use Craft;
 use craft\db\Migration;
-use QD\commerce\webshiper\base\Table;
 
 /**
- * m1510321_120000_droppointinfo migration.
+ * m210315_100020_droppointdata migration.
  */
-class m1510321_120000_droppointinfo extends Migration
+class m210315_100020_droppointdata extends Migration
 {
 	/**
 	 * @inheritdoc
@@ -24,7 +23,7 @@ class m1510321_120000_droppointinfo extends Migration
 	 */
 	public function safeDown()
 	{
-		echo "m1510321_120000_droppointinfo cannot be reverted.\n";
+		echo "m210315_100020_droppointdata cannot be reverted.\n";
 		return false;
 	}
 }
