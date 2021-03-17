@@ -242,7 +242,6 @@ class Connector extends Component
 
 		$originalShipping = [
 			'price' => $price,
-			'vat_percent' => ($vatPercentage) ? $vatPercentage : 0,
 			'shipping_name' => isset($shippingMethod->name) ? $shippingMethod->name : '-',
 			'shipping_code' => isset($shippingMethod->handle) ? $shippingMethod->handle : '-'
 		];
