@@ -22,11 +22,10 @@ class FrontendController extends Controller
 		$shippingObject = $order->getShippingAddress();
 
 		//If no shipping address is set, return empty array
-		if(!$shippingObject){
+		if (!$shippingObject) {
 			return json_encode([]);
 		}
 
-		return json_encode($webshipper->getDropPoints($shippingObject->zipCode,$shippingObject->country->iso,$order->getShippingMethod()->getWebshipperRateId(),$shippingObject->address1));
+		return $this->asJson($webshipper->getDropPoints($shippingObject->zipCode, $shippingObject->country->iso, $order->getShippingMethod()->getWebshipperRateId(), $shippingObject->address1));
 	}
-
 }

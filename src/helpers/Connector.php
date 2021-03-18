@@ -10,6 +10,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use QD\commerce\webshipper\events\BeforeCreateOrderEvent;
 use QD\commerce\webshipper\events\CustomOrderLinesEvent;
 use QD\commerce\webshipper\Webshipper;
+use craft\commerce\Plugin as CommercePlugin;
 use yii\base\Component;
 
 class Connector extends Component
@@ -255,7 +256,7 @@ class Connector extends Component
 					'billing_address'  => $billingAddress,
 					'delivery_address' => $shippingAddress,
 					'order_lines'      => $orderItems,
-					'currency'         => $order->currency,
+					'currency'         => $order->paymentCurrency,
 					'original_shipping' => $originalShipping
 				],
 				'relationships' => [
@@ -267,7 +268,7 @@ class Connector extends Component
 					],
 					'shipping_rate' => [
 						'data' => [
-							'id'   => $order->getShippingMethod()->getWebshipperRateId(),
+							'id'   => CommercePlugin::getInstance()->getShippingMethods()->getShippingMethodById($shippingMethod->id)->getWebshipperRateId(),
 							'type' => 'shipping_rates'
 						]
 					]

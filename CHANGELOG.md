@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.16 - 2021-03-18
+
+### Fixed
+
+* Fixed error in `QD\commerce\webshipper\controllers\FrontendController`, where the response always wasnt in JSON. Switched over to using [yii\web\Controller::asJson()](https://www.yiiframework.com/doc/api/2.0/yii-web-controller#asJson()-detail)
+
 ## 1.0.13 - 2021-03-15
 
 ### Fixed
@@ -90,3 +96,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 1.0.0 - 2020-11-10
 
 Initial release of the Webshipper plugin to the Craft Store
+
