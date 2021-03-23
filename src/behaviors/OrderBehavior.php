@@ -131,7 +131,7 @@ class OrderBehavior extends Behavior
 		}
 
 		if ($this->droppointSnapshot !== null) {
-			$data['droppointSnapshot'] = Json::decode($this->droppointSnapshot);
+			$data['droppointSnapshot'] = $this->droppointSnapshot;
 		}
 
 		if ($data) {

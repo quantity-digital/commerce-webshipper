@@ -70,7 +70,7 @@ class Install extends Migration
 			'id' => $this->integer()->notNull(),
 			'webshipperId' => $this->string()->null(),
 			'droppointId' => $this->string()->null(),
-			'droppointSnapshot' => $this->json()->null(),
+			'droppointSnapshot' => $this->longText()->null(),
 			'PRIMARY KEY([[id]])',
 		]);
 

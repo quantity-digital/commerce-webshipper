@@ -281,7 +281,9 @@ class Connector extends Component
 
 			if ($order->droppointSnapshot) {
 				$dropPoint = Json::decode($order->droppointSnapshot);
-			} else {
+			}
+
+			if(!isset($dropPoint['name']){
 				$dropPoint = $this->getDropPointData($shippingObject->zipCode, $order->droppointId, $shippingObject->country->iso, CommercePlugin::getInstance()->getShippingMethods()->getShippingMethodById($shippingMethod->id)->getWebshipperRateId());
 			}
 
