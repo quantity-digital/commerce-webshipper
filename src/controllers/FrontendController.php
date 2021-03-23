@@ -4,7 +4,7 @@ namespace QD\commerce\webshipper\controllers;
 
 use craft\web\Controller;
 use QD\commerce\webshipper\helpers\Connector;
-use craft\commerce\Plugin as Commerce;
+use craft\commerce\Plugin as CommercePlugin;
 
 class FrontendController extends Controller
 {
@@ -18,7 +18,7 @@ class FrontendController extends Controller
 	public function actionDroppointLocator()
 	{
 		$webshipper = new Connector();
-		$order = Commerce::getInstance()->getCarts()->getCart();
+		$order = CommercePlugin::getInstance()->getCarts()->getCart();
 		$shippingObject = $order->getShippingAddress();
 
 		//If no shipping address is set, return empty array
@@ -26,6 +26,6 @@ class FrontendController extends Controller
 			return json_encode([]);
 		}
 
-		return $this->asJson($webshipper->getDropPoints($shippingObject->zipCode, $shippingObject->country->iso, $order->getShippingMethod()->getWebshipperRateId(), $shippingObject->address1));
+		return $this->asJson($webshipper->getDropPoints($shippingObject->zipCode, $shippingObject->country->iso, CommercePlugin::getInstance()->getShippingMethods()->getShippingMethodById($order->getShippingMethod()->id)->getWebshipperRateId(), $shippingObject->address1));
 	}
 }

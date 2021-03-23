@@ -27,11 +27,10 @@ class Orders extends Component
 		}
 	}
 
-	public function addDeleteOrderQue($event){
+	public function addDeleteOrderQue($event)
+	{
 
-		// exit('test');
-
-		if(get_class($event->element) != Order::class){
+		if (get_class($event->element) != Order::class) {
 			return true;
 		}
 

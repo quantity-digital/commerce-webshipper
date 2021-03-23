@@ -4,6 +4,7 @@ namespace QD\commerce\webshipper\behaviors;
 
 use Craft;
 use craft\commerce\elements\Order;
+use craft\helpers\Json;
 use QD\commerce\webshipper\Webshipper;
 use yii\base\Behavior;
 
@@ -130,7 +131,7 @@ class OrderBehavior extends Behavior
 		}
 
 		if ($this->droppointSnapshot !== null) {
-			$data['droppointSnapshot'] = $this->droppointSnapshot;
+			$data['droppointSnapshot'] = Json::decode($this->droppointSnapshot);
 		}
 
 		if ($data) {
