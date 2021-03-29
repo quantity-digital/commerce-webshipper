@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.20 - 2021-03-29
+
+### Added
+
+* Added support for re-sync of order from orderpage
+
 ## 1.0.16 - 2021-03-18
 
 ### Fixed

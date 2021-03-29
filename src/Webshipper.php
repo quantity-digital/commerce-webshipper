@@ -137,6 +137,11 @@ class Webshipper extends \craft\base\Plugin
 			}
 		});
 
+		// Add ReSync button to oderpage
+		Craft::$app->view->hook('cp.commerce.order.edit.order-secondary-actions', function (&$context) {
+			return Craft::$app->view->renderTemplate('commerce-webshipper/order/resync', $context);
+		});
+
 		// Uses order edit template hook to inject order shipments.
 		Craft::$app->view->hook('cp.commerce.order.edit', function (&$context) {
 			/* @var Order $order */

@@ -147,6 +147,78 @@ class Connector extends Component
 	 */
 	public function createOrder($order, $customOrderId = null)
 	{
+		$this->setMethod('POST');
+		$this->options['json'] = $this->createDataFromOrder($order);
+
+		$request = $this->request('orders');
+
+		if (!$request) {
+			return false;
+		}
+
+		$decoded = $request->asArray();
+		return $decoded;
+	}
+
+	public function updateOrder($order, $webshipperId)
+	{
+		$this->setMethod('PATCH');
+		$this->options['json'] = $this->createDataFromOrder($order);
+		$request = $this->request('orders/' . $webshipperId);
+
+		if (!$request) {
+			return false;
+		}
+
+		$decoded = $request->asArray();
+		return $decoded;
+	}
+
+	public function getOrderByExtRef($extRef)
+	{
+		$this->setMethod('GET');
+		$request = $this->request('orders?filter[ext_ref]=' . $extRef);
+
+		if (!$request) {
+			Log::info('Connector, getOrderByExtRef: Request failed');
+			return false;
+		}
+
+		$decoded = $request->asArray();
+		return [
+			'data' => $decoded['data'][0]
+		];
+	}
+
+	/**
+	 * Get
+	 *
+	 * @param string $zipCode
+	 * @param string $dropPointID
+	 * @param string $country
+	 * @param integer $shippingRateID
+	 *
+	 * @return array|boolean
+	 */
+	public function getDropPointData($zipCode, $dropPointID, $country, $shippingRateID = null)
+	{
+		$dropPoints = $this->getDropPoints($zipCode, $country, $shippingRateID);
+
+		if (!$dropPoints) {
+			return false;
+		}
+
+		$key = array_search($dropPointID, array_column($dropPoints, 'drop_point_id'));
+
+		return $dropPoints[$key];
+	}
+
+
+	// Protected Methods
+	// =========================================================================
+
+	protected function createDataFromOrder($order)
+	{
 		$settings = Webshipper::getInstance()->getSettings();
 		$shippingAddress = null;
 		$billingAddress = null;
@@ -252,7 +324,7 @@ class Connector extends Component
 			'data' => [
 				'type'          => 'orders',
 				'attributes'    => [
-					'ext_ref'          => $customOrderId ? $customOrderId : $order->reference,
+					'ext_ref'          => $order->reference,
 					'billing_address'  => $billingAddress,
 					'delivery_address' => $shippingAddress,
 					'order_lines'      => $orderItems,
@@ -310,61 +382,10 @@ class Connector extends Component
 		if ($this->hasEventHandlers(self::EVENT_BEFORE_CREATE_ORDER)) {
 			$this->trigger(self::EVENT_BEFORE_CREATE_ORDER, $createOrderEvent);
 		}
-		$this->setMethod('POST');
-		$this->options['json'] = $createOrderEvent->shippingData;
 
-		$request = $this->request('orders');
-
-		if (!$request) {
-			return false;
-		}
-
-		$decoded = $request->asArray();
-		return $decoded;
+		return $createOrderEvent->shippingData;
 	}
 
-	public function getOrderByExtRef($extRef)
-	{
-		$this->setMethod('GET');
-		$request = $this->request('orders?filter[ext_ref]=' . $extRef);
-
-		if (!$request) {
-			Log::info('Connector, getOrderByExtRef: Request failed');
-			return false;
-		}
-
-		$decoded = $request->asArray();
-		return [
-			'data' => $decoded['data'][0]
-		];
-	}
-
-	/**
-	 * Get
-	 *
-	 * @param string $zipCode
-	 * @param string $dropPointID
-	 * @param string $country
-	 * @param integer $shippingRateID
-	 *
-	 * @return array|boolean
-	 */
-	public function getDropPointData($zipCode, $dropPointID, $country, $shippingRateID = null)
-	{
-		$dropPoints = $this->getDropPoints($zipCode, $country, $shippingRateID);
-
-		if (!$dropPoints) {
-			return false;
-		}
-
-		$key = array_search($dropPointID, array_column($dropPoints, 'drop_point_id'));
-
-		return $dropPoints[$key];
-	}
-
-
-	// Protected Methods
-	// =========================================================================
 
 	/**
 	 * Set the curl method
