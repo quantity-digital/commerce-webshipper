@@ -12,7 +12,7 @@ class OrderController extends Controller
 	public function actionResync()
 	{
 		$orderId = Craft::$app->getRequest()->getBodyParam('orderId');
-		Craft::$app->getQueue()->push(new ReSyncOrder(
+		Craft::$app->getQueue()->delay(10)->push(new ReSyncOrder(
 			[
 				'orderId' => $orderId,
 			]

@@ -33,6 +33,7 @@ class ReSyncOrder extends BaseJob
 					'orderId' => $order->id,
 				]
 			));
+			return;
 		}
 
 		$webshipper = new Connector();

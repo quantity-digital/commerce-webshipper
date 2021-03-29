@@ -162,8 +162,10 @@ class Connector extends Component
 
 	public function updateOrder($order, $webshipperId)
 	{
+		$shippingData = $this->createDataFromOrder($order);
+		$shippingData['data']['id'] = $webshipperId;
 		$this->setMethod('PATCH');
-		$this->options['json'] = $this->createDataFromOrder($order);
+		$this->options['json'] = $shippingData;
 		$request = $this->request('orders/' . $webshipperId);
 
 		if (!$request) {
