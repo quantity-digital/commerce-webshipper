@@ -1,11 +1,40 @@
-<form class="order-flex">
-	<input type="hidden" name="action" value="commerce-webshipper/order/resync">
+<div class="order-flex">
 	<div class="spacer"></div>
-	<div><!----><input id="order-edit-btn" type="submit" value="Sync to webshipper" class="btn"></div>
-</form>
+	<div>
+		<div id="order-resync-btn" class="btn" onClick="resyncOrder()">Sync to webshipper</div>
+	</div>
+	<div class="spinner" id="resyncspinner" style="display:none"></div>
+	<div class="spacer"></div>
+</div>
 
 <style>
 	#order-secondary-actions {
 		display: flex;
 	}
 </style>
+
+<script type="text/javascript">
+
+
+function resyncOrder() {
+	let spinner = document.getElementById('resyncspinner');
+	spinner.style.display = 'inline-block';
+
+	var formData = new FormData();
+
+	formData.append('action', 'commerce-webshipper/order/resync')
+	formData.append('CRAFT_CSRF_TOKEN', Craft.csrfTokenValue)
+	formData.append('orderId', {{ order.id }})
+
+	fetch(window.location.href, {
+	method: "post",
+	headers: {
+	'Accept': 'application/json',
+	},
+	// make sure to serialize your JSON body
+	body: formData
+	}).then((response) => {
+	spinner.style.display = 'none';
+	});
+}
+</script>
