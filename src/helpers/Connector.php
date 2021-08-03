@@ -117,6 +117,10 @@ class Connector extends Component
 
 		$decoded = $request->asArray();
 
+		if (!isset($decoded['data'])) {
+			return $this->getDropPoints($zipCode, $country, $shippingRateID, $address1);
+		}
+
 		return $decoded['data']['attributes']['drop_points'];
 	}
 
