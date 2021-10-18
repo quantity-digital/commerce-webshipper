@@ -24,7 +24,7 @@ class OrderQueryBehavior extends Behavior
 	public function events()
 	{
 		return [
-			ElementQuery::EVENT_AFTER_PREPARE => 'afterPrepare',
+			ElementQuery::EVENT_BEFORE_PREPARE => 'beforePrepare',
 		];
 	}
 
@@ -51,14 +51,14 @@ class OrderQueryBehavior extends Behavior
 	/**
 	 * Prepares the user query.
 	 */
-	public function afterPrepare()
+	public function beforePrepare()
 	{
 		if ($this->owner->select === ['COUNT(*)']) {
 			return;
 		}
 
 		// Join our `orderextras` table:
-		$this->owner->query->leftJoin('webshipper_orderinfo webshipper', '[[webshipper.id]] = [[elements.id]]');
+		$this->owner->query->leftJoin('webshipper_orderinfo webshipper', '`webshipper`.id = `commerce_orders`.`id`');
 
 		// Select custom columns:
 		$this->owner->query->addSelect([

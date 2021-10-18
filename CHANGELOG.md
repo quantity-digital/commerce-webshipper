@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 1.0.23 - 2021-10-18
+
+* Fixed the error `SQLSTATE[21000]: Cardinality violation: 1241 Operand should contain 1 column(s)` when searching orders. Fixed by moving `OrderQueryBehavior` event to `ElementQuery::EVENT_BEFORE_PREPARE`
+
 ## 1.0.22 - 2021-03-30
 
 ### Fixed
 
-* Fixed error where resync button also would resave order 
+* Fixed error where resync button also would resave order
 
 ## 1.0.20 - 2021-03-29
 
@@ -108,4 +112,3 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 1.0.0 - 2020-11-10
 
 Initial release of the Webshipper plugin to the Craft Store
-
